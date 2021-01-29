@@ -2,6 +2,6 @@
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "comma-dangle": ["error", "never"],
-    "max-lines-per-function": ["error", 40]
+    "max-lines-per-function": ["error", 100]
   }
 }
