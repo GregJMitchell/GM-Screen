@@ -3,7 +3,7 @@
 "GM Screen" is a website created for game masters of Dungeons and Dragons 
 campaigns to organize and build their worlds. This hub allows users to manage 
 multiple campaign worlds. GM Screen uses the robust relationship building in 
-PostgreSQL to help display relevant info where a user needs it. 
+PostgreSQL to help display relevant info where a user needs it. All data is handles by the backend API [here](https://github.com/GregJMitchell/gm-screen-api)
 
 ### Completed Features
 * User login/logout
