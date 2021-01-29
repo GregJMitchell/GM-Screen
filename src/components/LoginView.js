@@ -1,64 +1,10 @@
-// import React from 'react';
-// import { getUser } from '../services/Login'
-
-// class LoginView extends React.Component {
-//   state={
-//     username:"",
-//     password:"",
-//     loading:false
-//   };
-//   handleChange = event => {
-//     this.setState({ [event.target.name]: event.target.value });
-//   };
-
-//   encryptPassword = (password) => {
-//     var bcrypt = require('bcryptjs');
-//     var salt = bcrypt.genSaltSync(10);
-//     var hash = bcrypt.hashSync(password, salt);
-//     return hash;
-//   };
-
-//   handlePasswordChange = event => {
-//     let encryptedPassword = this.encryptPassword(event.target.value);
-//     this.setState({ password: encryptedPassword});
-//   };
-
-//   submitLogin = async event => {
-//     event.preventDefault();
-//     this.setState({loading:true});
-//     await getUser( this.state.username, this.state.password);
-//     this.setState({ loading:false, hasErrors:false });
-//   }
-
-//   render () {
-//     return (
-//       <form>
-//           <input
-//             type="text"
-//             placeholder="Username"
-//             name="username"
-//             value={this.state.username}
-//             onChange={event => this.handleChange(event)}
-//             />
-
-//           <input
-//             type="password"
-//             placeholder="Password"
-//             name="password"
-//             onChange={this.handlePasswordChange}
-//           />
-
-//           <button onClick={this.submitLogin}>Submit</button>
-//       </form>
-//     )
-//   };
-// }
-
-// export default LoginView;
-
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import axios from 'axios'
 import {Link} from 'react-router-dom'
+import Cookies from "universal-cookie"
+
+const cookies = new Cookies()
+
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -81,22 +27,37 @@ handleChange = (event) => {
       username: this.state.username,
       password: this.state.password
     }
+
     
-(axios.post('http://localhost:3001/api/v1/login', {user}, {withCredentials: true})
+    
+axios.post('http://localhost:3001/api/v1/login', {user}, {withCredentials: true})
     .then(response => {
-      if (response.data.id) {
-        this.props.handleLogin(response.data)
+      if (response.data.data.id) {
+        cookies.set("user", response.data.data, "/")
+        console.log(cookies.get('user'));
         this.redirect()
-      } else {
+        
+      } 
+      else {
         this.setState({
-          errors: response.data.errors
+          errors: response.data
         })
+        return this.handleErrors()
       }
     })
     .catch(error => console.log('api errors:', error))
-  };
+};
+componentDidMount() {
+  if (cookies.get("user")) {
+    this.redirect()
+  }
+  else {
+    this.render()
+  }
+}
+
 redirect = () => {
-    this.props.history.push('/home')
+    this.props.history.push('/campaigns')
   }
 handleErrors = () => {
     return (
@@ -137,8 +98,13 @@ render() {
           </div>
           
          </form>
+         <div>
+          {
+            this.state.errors ? this.handleErrors() : null
+          }
+        </div>
       </div>
     );
   }
 }
-export default Login;
+export default Login
